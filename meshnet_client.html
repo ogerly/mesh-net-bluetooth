@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeshNet Connect — Decentralized Mesh Client</title>
+    <style>
+        :root {
+            --bg: #0a0e17;
+            --panel: #111827;
+            --panel2: #1a2236;
+            --accent: #00d4aa;
+            --accent2: #3b82f6;
+            --text: #e2e8f0;
+            --text2: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #22c55e;
+            --border: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .app {
+            display: grid;
+            grid-template-columns: 320px 1fr 340px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            gap: 1px;
+            background: var(--border);
+        }
+        .header {
+            grid-column: 1 / -1;
+            background: var(--panel);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+        }
+        .logo svg { width: 28px; height: 28px; }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 0.85rem;
+            color: var(--text2);
+        }
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--text2);
+            position: relative;
+        }
+        .status-dot.active { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .status-dot.relay { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+        .left-panel, .right-panel {
+            background: var(--panel);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .panel-title {
+            padding: 16px 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text2);
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+        }
+        .main-area {
+            background: var(--bg);
+            position: relative;
+            overflow: hidden;
+        }
+        #meshCanvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+        #meshCanvas:active { cursor: grabbing; }
+
+        .controls {
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+        .btn-primary:hover { background: #00b894; transform: translateY(-1px); }
+        .btn-secondary {
+            background: var(--panel2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { background: #243047; }
+        .btn-danger {
+            background: rgba(239,68,68,0.15);
+            color: var(--danger);
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+        .node-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        .node-item {
+            padding: 12px 14px;
+            margin: 4px 8px;
+            background: var(--panel2);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .node-item:hover { border-color: var(--accent); background: #1a2d3d; }
+        .node-item.active { border-color: var(--accent); background: rgba(0,212,170,0.08); }
+        .node-item.offline { opacity: 0.4; }
+        .node-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .node-name { font-weight: 600; font-size: 0.9rem; }
+        .node-badge {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-relay { background: rgba(0,212,170,0.15); color: var(--accent); }
+        .badge-leaf { background: rgba(59,130,246,0.15); color: var(--accent2); }
+        .badge-offline { background: rgba(148,163,184,0.15); color: var(--text2); }
+        .node-meta {
+            font-size: 0.75rem;
+            color: var(--text2);
+            display: flex;
+            gap: 12px;
+        }
+        .node-signal {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .signal-bar {
+            width: 3px;
+            background: var(--text2);
+            border-radius: 2px;
+            opacity: 0.3;
+        }
+        .signal-bar.on { opacity: 1; background: var(--success); }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            position: relative;
+            animation: msgIn 0.3s ease;
+        }
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg-own {
+            align-self: flex-end;
+            background: var(--accent);
+            color: #000;
+            border-bottom-right-radius: 4px;
+        }
+        .msg-peer {
+            align-self: flex-start;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+        .msg-meta {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 4px;
+            display: flex;
+            gap: 8px;
+        }
+        .msg-route {
+            color: var(--accent);
+            font-family: monospace;
+        }
+        .msg-input-area {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+        }
+        .msg-input {
+            flex: 1;
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text);
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .msg-input:focus { border-color: var(--accent); }
+
+        .overlay {
+            position: absolute;
+            top: 16px; left: 16px;
+            background: rgba(17,24,39,0.9);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text2);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .overlay-row { display: flex; gap: 16px; }
+        .overlay-stat { text-align: center; }
+        .overlay-num { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+        .overlay-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .toast-container {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+        .toast {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            animation: toastIn 0.3s ease;
+            max-width: 320px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warn { border-left-color: var(--warning); }
+        @keyframes toastIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 16px; left: 16px;
+            background: rgba(17,24,39,0.9);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text2);
+            z-index: 10;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        .packet-tracer {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        @media (max-width: 1100px) {
+            .app { grid-template-columns: 260px 1fr 300px; }
+        }
+        @media (max-width: 900px) {
+            .app { grid-template-columns: 1fr; grid-template-rows: 60px auto 1fr auto; }
+            .left-panel, .right-panel { max-height: 300px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                MeshNet Connect
+            </div>
+            <div class="status-bar">
+                <span id="netStatus">Offline</span>
+                <div class="status-dot" id="statusDot"></div>
+                <span id="nodeCount">0 Nodes</span>
+                <span id="myId" style="font-family:monospace;color:var(--accent)">—</span>
+            </div>
+        </header>
+
+        <aside class="left-panel">
+            <div class="panel-title">Netzwerk-Kontrolle</div>
+            <div class="controls">
+                <button class="btn btn-primary" id="btnScan" onclick="scanBluetooth()">
+                    🔵 Bluetooth Scan
+                </button>
+                <button class="btn btn-secondary" id="btnSim" onclick="toggleSimulation()">
+                    ▶️ Simulation Starten
+                </button>
+                <button class="btn btn-secondary" onclick="addRandomNode()">
+                    ➕ Node Hinzufügen
+                </button>
+                <button class="btn btn-danger" onclick="clearNetwork()">
+                    🗑️ Netzwerk Leeren
+                </button>
+            </div>
+            <div class="panel-title">Aktive Nodes</div>
+            <div class="node-list" id="nodeList"></div>
+        </aside>
+
+        <main class="main-area">
+            <canvas id="meshCanvas"></canvas>
+            <div class="overlay">
+                <div class="overlay-row">
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statNodes">0</div>
+                        <div class="overlay-label">Nodes</div>
+                    </div>
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statHops">0</div>
+                        <div class="overlay-label">Max Hops</div>
+                    </div>
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statMsgs">0</div>
+                        <div class="overlay-label">Messages</div>
+                    </div>
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statRelays">0</div>
+                        <div class="overlay-label">Relays</div>
+                    </div>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> Relay Node</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div> Leaf Node</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div> This Device</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--text2)"></div> Offline</div>
+            </div>
+        </main>
+
+        <aside class="right-panel">
+            <div class="panel-title">Mesh Messenger</div>
+            <div class="chat-area">
+                <div class="messages" id="messages"></div>
+                <div class="msg-input-area">
+                    <input type="text" class="msg-input" id="msgInput" placeholder="Nachricht senden..." maxlength="200">
+                    <button class="btn btn-primary" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="toast-container" id="toasts"></div>
+
+<script>
+// ==================== MESHNET CONNECT CLIENT ====================
+// Decentralized Bluetooth Mesh Network Simulator + Web Bluetooth API
+// ================================================================
+
+const canvas = document.getElementById('meshCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+// --- State ---
+const state = {
+    nodes: [],
+    myId: generateId(),
+    myName: 'Me (' + navigator.platform.slice(0, 7) + ')',
+    selectedNode: null,
+    simulation: false,
+    messages: [],
+    packets: [], // animated packets traveling
+    bluetoothDevice: null,
+    nextMsgId: 1,
+};
+
+// --- Init Canvas ---
+function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    draw();
+}
+window.addEventListener('resize', resize);
+
+// --- ID Generator ---
+function generateId() {
+    return '0x' + Array.from({length: 4}, () => Math.floor(Math.random()*16).toString(16)).join('').toUpperCase();
+}
+function genName() {
+    const names = ['Alpha','Bravo','Charlie','Delta','Echo','Foxtrot','Golf','Hotel','India','Juliet','Kilo','Lima'];
+    return names[Math.floor(Math.random()*names.length)] + '-' + Math.floor(Math.random()*99);
+}
+
+// --- Node Class ---
+class Node {
+    constructor(x, y, name, isRelay = true, isMe = false) {
+        this.id = generateId();
+        this.name = name || genName();
+        this.x = x; this.y = y;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.isRelay = isRelay;
+        this.isMe = isMe;
+        this.online = true;
+        this.rssi = -40 - Math.floor(Math.random() * 50);
+        this.hops = isMe ? 0 : Infinity;
+        this.lastSeen = Date.now();
+        this.radius = isRelay ? 22 : 16;
+        this.pulse = 0;
+        this.color = isMe ? '#22c55e' : (isRelay ? '#00d4aa' : '#3b82f6');
+    }
+    update() {
+        if (!state.simulation) return;
+        this.x += this.vx;
+        this.y += this.vy;
+        // Bounce
+        if (this.x < this.radius) { this.x = this.radius; this.vx *= -1; }
+        if (this.x > W - this.radius) { this.x = W - this.radius; this.vx *= -1; }
+        if (this.y < this.radius) { this.y = this.radius; this.vy *= -1; }
+        if (this.y > H - this.radius) { this.y = H - this.radius; this.vy *= -1; }
+        this.pulse += 0.05;
+    }
+    distanceTo(other) {
+        const dx = this.x - other.x, dy = this.y - other.y;
+        return Math.sqrt(dx*dx + dy*dy);
+    }
+}
+
+// --- Network Logic ---
+function initNetwork() {
+    // Add self at center
+    const me = new Node(W/2, H/2, state.myName, true, true);
+    me.id = state.myId;
+    state.nodes = [me];
+    // Add some initial neighbors
+    for (let i = 0; i < 3; i++) addRandomNode();
+    updateUI();
+    draw();
+}
+
+function addRandomNode() {
+    const isRelay = Math.random() > 0.3;
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 80 + Math.random() * (Math.min(W,H)/2 - 100);
+    const x = W/2 + Math.cos(angle) * dist;
+    const y = H/2 + Math.sin(angle) * dist;
+    const node = new Node(x, y, null, isRelay);
+    state.nodes.push(node);
+    toast(`Node ${node.name} beigetreten`, 'info');
+    updateHops();
+    updateUI();
+}
+
+function clearNetwork() {
+    const me = state.nodes.find(n => n.isMe);
+    state.nodes = me ? [me] : [];
+    state.messages = [];
+    state.packets = [];
+    document.getElementById('messages').innerHTML = '';
+    updateUI();
+    toast('Netzwerk zurückgesetzt', 'warn');
+}
+
+function updateHops() {
+    // Simple BFS from me to compute hops
+    const me = state.nodes.find(n => n.isMe);
+    if (!me) return;
+    const range = 180; // Bluetooth range px
+    state.nodes.forEach(n => n.hops = Infinity);
+    me.hops = 0;
+    const queue = [me];
+    while (queue.length) {
+        const cur = queue.shift();
+        for (const n of state.nodes) {
+            if (n.hops === Infinity && n.online && cur.distanceTo(n) < range && (cur.isRelay || n === me)) {
+                n.hops = cur.hops + 1;
+                queue.push(n);
+            }
+        }
+    }
+}
+
+// --- Message Routing (Managed Flooding) ---
+function sendMessage() {
+    const input = document.getElementById('msgInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+
+    const msg = {
+        id: state.nextMsgId++,
+        src: state.myId,
+        srcName: state.myName,
+        text: text,
+        ttl: 7,
+        hops: 0,
+        route: [state.myId],
+        timestamp: Date.now(),
+        delivered: false,
+    };
+
+    state.messages.push(msg);
+    addMessageToUI(msg, true);
+    floodMessage(msg, state.myId);
+    updateUI();
+}
+
+function floodMessage(msg, fromId) {
+    const me = state.nodes.find(n => n.id === state.myId);
+    const range = 180;
+    const neighbors = state.nodes.filter(n => 
+        n.id !== fromId && n.online && n.id !== msg.src && 
+        me.distanceTo(n) < range
+    );
+
+    neighbors.forEach(neighbor => {
+        // Animate packet
+        state.packets.push({
+            from: me,
+            to: neighbor,
+            msgId: msg.id,
+            progress: 0,
+            speed: 0.03 + Math.random() * 0.02,
+        });
+
+        // Simulate relay
+        setTimeout(() => {
+            if (neighbor.isRelay && msg.ttl > 0) {
+                msg.ttl--;
+                msg.hops++;
+                msg.route.push(neighbor.id);
+                // Continue flooding from neighbor (visual only)
+                continueFloodFrom(neighbor, msg);
+            }
+        }, 300);
+    });
+
+    msg.delivered = true;
+}
+
+function continueFloodFrom(node, msg) {
+    const range = 180;
+    const nextHops = state.nodes.filter(n => 
+        n.id !== node.id && n.online && !msg.route.includes(n.id) &&
+        node.distanceTo(n) < range && n.isRelay
+    );
+
+    nextHops.forEach(next => {
+        state.packets.push({
+            from: node,
+            to: next,
+            msgId: msg.id,
+            progress: 0,
+            speed: 0.03,
+        });
+    });
+}
+
+function receiveMessage(msg) {
+    if (msg.src === state.myId) return;
+    msg.delivered = true;
+    state.messages.push(msg);
+    addMessageToUI(msg, false);
+    toast(`Nachricht von ${msg.srcName} empfangen (${msg.hops} Hops)`, 'info');
+}
+
+// --- UI ---
+function addMessageToUI(msg, own) {
+    const div = document.createElement('div');
+    div.className = `msg ${own ? 'msg-own' : 'msg-peer'}`;
+    const time = new Date(msg.timestamp).toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+    div.innerHTML = `
+        <div>${escapeHtml(msg.text)}</div>
+        <div class="msg-meta">
+            <span>${msg.srcName}</span>
+            <span>${time}</span>
+            ${!own ? `<span class="msg-route">${msg.hops} hops</span>` : ''}
+        </div>
+    `;
+    const container = document.getElementById('messages');
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(t) {
+    return t.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',''':'&#39;'}[m]));
+}
+
+function updateUI() {
+    // Node list
+    const list = document.getElementById('nodeList');
+    list.innerHTML = '';
+    state.nodes.forEach(node => {
+        const el = document.createElement('div');
+        el.className = `node-item ${node.isMe ? 'active' : ''} ${!node.online ? 'offline' : ''}`;
+        const signal = Math.max(0, Math.min(4, Math.floor((node.rssi + 90) / 10)));
+        el.innerHTML = `
+            <div class="node-header">
+                <span class="node-name">${escapeHtml(node.name)}</span>
+                <span class="node-badge ${node.isRelay ? 'badge-relay' : 'badge-leaf'}">${node.isRelay ? 'Relay' : 'Leaf'}</span>
+            </div>
+            <div class="node-meta">
+                <span style="font-family:monospace">${node.id}</span>
+                <span class="node-signal">
+                    ${[1,2,3,4].map(i => `<div class="signal-bar ${i<=signal?'on':''}" style="height:${4+i*3}px"></div>`).join('')}
+                </span>
+                <span>${node.hops === Infinity ? '∞' : node.hops} hops</span>
+            </div>
+        `;
+        el.onclick = () => { state.selectedNode = node; updateUI(); };
+        list.appendChild(el);
+    });
+
+    // Stats
+    const relays = state.nodes.filter(n => n.isRelay && n.online).length;
+    const maxHops = state.nodes.reduce((m, n) => Math.max(m, n.hops === Infinity ? 0 : n.hops), 0);
+    document.getElementById('statNodes').textContent = state.nodes.length;
+    document.getElementById('statHops').textContent = maxHops;
+    document.getElementById('statMsgs').textContent = state.messages.length;
+    document.getElementById('statRelays').textContent = relays;
+    document.getElementById('nodeCount').textContent = state.nodes.length + ' Nodes';
+    document.getElementById('myId').textContent = state.myId;
+}
+
+function toggleSimulation() {
+    state.simulation = !state.simulation;
+    const btn = document.getElementById('btnSim');
+    btn.textContent = state.simulation ? '⏸️ Simulation Pausieren' : '▶️ Simulation Starten';
+    document.getElementById('netStatus').textContent = state.simulation ? 'Mesh Active' : 'Standby';
+    document.getElementById('statusDot').className = 'status-dot ' + (state.simulation ? 'relay' : '');
+    if (state.simulation) loop();
+}
+
+// --- Canvas Drawing ---
+function draw() {
+    ctx.fillStyle = '#0a0e17';
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw connections
+    const range = 180;
+    ctx.strokeStyle = 'rgba(0,212,170,0.08)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < state.nodes.length; i++) {
+        for (let j = i+1; j < state.nodes.length; j++) {
+            const a = state.nodes[i], b = state.nodes[j];
+            const d = a.distanceTo(b);
+            if (d < range && a.online && b.online) {
+                const alpha = 1 - d/range;
+                ctx.strokeStyle = `rgba(0,212,170,${alpha * 0.25})`;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+            }
+        }
+    }
+
+    // Draw packets
+    state.packets.forEach(p => {
+        const x = p.from.x + (p.to.x - p.from.x) * p.progress;
+        const y = p.from.y + (p.to.y - p.from.y) * p.progress;
+        ctx.fillStyle = '#fbbf24';
+        ctx.shadowColor = '#fbbf24';
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI*2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+    });
+
+    // Draw nodes
+    state.nodes.forEach(node => {
+        if (!node.online) {
+            ctx.globalAlpha = 0.3;
+        }
+
+        // Pulse ring for relays
+        if (node.isRelay && node.online) {
+            ctx.strokeStyle = node.color;
+            ctx.globalAlpha = 0.15 * (0.5 + 0.5 * Math.sin(node.pulse));
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius + 10 + 5*Math.sin(node.pulse), 0, Math.PI*2);
+            ctx.stroke();
+            ctx.globalAlpha = node.online ? 1 : 0.3;
+        }
+
+        // Node body
+        const grad = ctx.createRadialGradient(node.x-5, node.y-5, 2, node.x, node.y, node.radius);
+        grad.addColorStop(0, node.color);
+        grad.addColorStop(1, node.color + '88');
+        ctx.fillStyle = grad;
+        ctx.shadowColor = node.color;
+        ctx.shadowBlur = node.isMe ? 20 : 12;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI*2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Inner dot
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 4, 0, Math.PI*2);
+        ctx.fill();
+
+        // Label
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(node.name, node.x, node.y + node.radius + 16);
+        ctx.fillText(node.id, node.x, node.y + node.radius + 30);
+
+        ctx.globalAlpha = 1;
+    });
+
+    // Selected highlight
+    if (state.selectedNode) {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.arc(state.selectedNode.x, state.selectedNode.y, state.selectedNode.radius + 18, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    }
+}
+
+function loop() {
+    if (!state.simulation) return;
+    state.nodes.forEach(n => n.update());
+
+    // Update packets
+    state.packets = state.packets.filter(p => {
+        p.progress += p.speed;
+        return p.progress < 1;
+    });
+
+    updateHops();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+// --- Bluetooth API (Real) ---
+async function scanBluetooth() {
+    if (!navigator.bluetooth) {
+        toast('Web Bluetooth API nicht verfügbar. Nutze Chrome/Edge mit BT-Flag.', 'error');
+        return;
+    }
+    try {
+        toast('Suche nach Bluetooth Mesh Nodes...', 'info');
+        const device = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: ['generic_access', 'battery_service']
+        });
+        state.bluetoothDevice = device;
+        toast(`Verbunden: ${device.name || 'Unbekannt'}`, 'success');
+
+        // Add as virtual node
+        const node = new Node(W/2 + (Math.random()-0.5)*200, H/2 + (Math.random()-0.5)*200, device.name || 'BT-Device', true);
+        node.online = true;
+        state.nodes.push(node);
+        updateUI();
+        draw();
+    } catch (e) {
+        toast('Bluetooth Scan abgebrochen: ' + e.message, 'warn');
+    }
+}
+
+// --- Toast ---
+function toast(msg, type = 'info') {
+    const container = document.getElementById('toasts');
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+}
+
+// --- Input handler ---
+document.getElementById('msgInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') sendMessage();
+});
+
+// --- Canvas interaction ---
+canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Check node click
+    for (const node of state.nodes) {
+        if (node.distanceTo({x,y}) < node.radius + 10) {
+            state.selectedNode = node;
+            toast(`Node ${node.name} ausgewählt — ${node.isRelay ? 'Relay' : 'Leaf'}`, 'info');
+            draw();
+            return;
+        }
+    }
+    state.selectedNode = null;
+    draw();
+});
+
+// --- Start ---
+setTimeout(() => {
+    resize();
+    initNetwork();
+    toast('MeshNet Client bereit. Starte Simulation oder scanne Bluetooth.', 'info');
+}, 100);
+
+// Simulate incoming messages occasionally
+setInterval(() => {
+    if (state.simulation && state.nodes.length > 1 && Math.random() < 0.15) {
+        const sender = state.nodes.find(n => !n.isMe && n.online);
+        if (sender) {
+            const texts = [
+                'Hallo vom Mesh! 📡',
+                'Offline-Modus aktiv.',
+                'Neuer Node bei 3 Hops.',
+                'Relay-Status: OK',
+                'Packet forwarded.',
+                'Mesh topology updated.'
+            ];
+            const msg = {
+                id: state.nextMsgId++,
+                src: sender.id,
+                srcName: sender.name,
+                text: texts[Math.floor(Math.random()*texts.length)],
+                ttl: 5,
+                hops: sender.hops,
+                route: [sender.id],
+                timestamp: Date.now(),
+                delivered: true,
+            };
+            receiveMessage(msg);
+        }
+    }
+}, 5000);
+
+// Random node failures / recoveries (self-healing demo)
+setInterval(() => {
+    if (state.simulation && state.nodes.length > 3) {
+        const victim = state.nodes[Math.floor(Math.random() * state.nodes.length)];
+        if (!victim.isMe) {
+            victim.online = !victim.online;
+            if (victim.online) {
+                toast(`${victim.name} ist wieder online`, 'success');
+            } else {
+                toast(`${victim.name} offline — Mesh rerouting...`, 'warn');
+            }
+            updateHops();
+            updateUI();
+        }
+    }
+}, 8000);
+
+</script>
+</body>
+</html>
