@@ -124,11 +124,24 @@ Specific error cases handled:
 3. Should Bluetooth status indicators include more granular states (scanning, connected, etc.)?
 
 ## Status
-✅ COMPLETION - All specified implementation work finished and documented.
+✅ COMPLETION - Core implementation work finished and documented.
+Additional work completed:
+- Removed simulation and implemented real-devices-only experience
+- Added custom PWA install prompt
+- Removed CNAME file to avoid custom domain charges
+- Enhanced Bluetooth device identification and deduplication
+- Implemented device tracking to prevent duplicate entries
+- Added stale device cleanup (30-second timeout)
+- Prepared for festival stress testing with QR pairing and service filtering
 
-## Next Steps
+## Updated Next Steps
 1. [ ] REFACTOR-001: Replace `prompt()` calls with custom modal for better UX
 2. [ ] REFACTOR-002: Implement proper cache versioning in service worker
-3. [ ] Plan and execute local testing sessions (laptop + Android device)
-4. [ ] Document test results in new workpaper
-5. [ ] Evaluate if `bluetooth-mesh.html` needs updates based on test feedback
+3. [ ] Plan and document festival stress test results in new workpaper
+4. [ ] Implement service UUID filtering for reliable data transfer
+5. [ ] Add QR-code based exact device pairing (scan QR to connect to specific device)
+6. [ ] Implement RSSI-based sorting for device list (strongest signal first)
+7. [ ] Add visual/pairing confirmation feedback (toast, UI change, optional haptic)
+8. [ ] Consider MTU chunking for larger mesh messages (>23 bytes)
+9. [ ] Add connection lifetime management with automatic reconnection
+10. [ ] Evaluate if `bluetooth-mesh.html` needs updates based on test feedback
