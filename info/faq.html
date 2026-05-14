@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/info.css">
+</head>
+<body>
+    <div class="info-layout">
+        <aside class="info-sidebar">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                MeshNet Connect
+            </div>
+            <nav class="info-nav">
+                <a href="about.html">Über das Projekt</a>
+                <a href="how-it-works.html">Wie es funktioniert</a>
+                <a href="bluetooth-mesh.html">Bluetooth Mesh erklärt</a>
+                <a href="news.html">Neuigkeiten</a>
+                <a href="docs.html">Dokumentation</a>
+                <a href="workshop.html">Workshop / Festival</a>
+                <a href="faq.html" class="active">FAQ</a>
+            </nav>
+        </aside>
+        <main class="info-content">
+            <a href="../index.html" class="info-back">← Zurück zur App</a>
+            <span class="info-badge research">Forschungsprojekt</span>
+            <h1>Häufige Fragen</h1>
+            
+            <h2>Geräte</h2>
+            <div class="info-divider"></div>
+            <h3>Brauche ich ein spezielles Gerät?</h3>
+            <p>Android-Gerät empfohlen (Chrome oder Samsung Internet). iOS-Geräte funktionieren als Simulation. Desktop: Chrome/Edge oder Bluetooth Dongle.</p>
+            
+            <h3>Funktioniert auf iOS?</h3>
+            <p>Ja — als Simulation. Safari hat keine Web Bluetooth API, aber Simulation Mode bietet volle Experience: Canvas, Chat, Mesh-topology verstehen.</p>
+            
+            <h3>Brauche ich einen Bluetooth Dongle?</h3>
+            <p>Nur für Desktop-Laptops. Android-BT ist sufficient. Dongles für Workshop-Tisch am Festival.</p>
+            
+            <div class="info-divider"></div>
+            
+            <h2>Teilnahme</h2>
+            <div class="info-divider"></div>
+            <h3>Brauche ich Vorkenntnisse?</h3>
+            <p>Nein. Level 1 (Experience) braucht keine Kenntnisse. Alle können mitmachen.</p>
+            
+            <h3>Wer kann mitmachen?</h3>
+            <p>Alle. MeshNet Connect ist offen für alle — technisch interessiert oder einfach neugierig.</p>
+            
+            <h3>Ist das sicher?</h3>
+            <p>MeshNet ist ein Forschungsprojekt. Messages werden im lokalen Mesh geroutet. Keine Daten an Server. Verschlüsselung ist ein offenes Thema.</p>
+            
+            <div class="info-divider"></div>
+            
+            <h2>Technik</h2>
+            <div class="info-divider"></div>
+            <h3>Wie groß wird das Netzwerk?</h3>
+            <p>Festival: ~10-30 Nodes. Bluetooth Reichweite ~10m pro Node. Multi-hop erweitert coverage.</p>
+            
+            <h3>Braucht MeshNet Internet?</h3>
+            <p>Nein. Pure client-side, kein Server. Funktioniert offline.</p>
+            
+            <h3>Was passiert wenn jemand das Festival verlässt?</h3>
+            <p>Das Netzwerk reroutet automatisch. Self-healing — das Netzwerk bleibt.</p>
+        </main>
+    </div>
+</body>
+</html>

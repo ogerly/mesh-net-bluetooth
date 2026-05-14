@@ -1,0 +1,164 @@
+/* === MeshNet Connect — Info Page Styles === */
+
+.info-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+    background: var(--bg);
+}
+
+.info-sidebar {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 24px 20px;
+}
+
+.info-sidebar .logo {
+    margin-bottom: 32px;
+    font-size: 1rem;
+}
+
+.info-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-nav a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    transition: all 0.2s;
+}
+.info-nav a:hover {
+    background: var(--panel2);
+    color: var(--text);
+}
+.info-nav a.active {
+    background: rgba(0,212,170,0.08);
+    color: var(--accent);
+}
+
+.info-content {
+    padding: 40px 48px;
+    max-width: 800px;
+}
+
+.info-content h1 {
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.info-content h2 {
+    font-size: 1.3rem;
+    color: var(--text);
+    margin: 32px 0 16px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.info-content p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text2);
+    margin-bottom: 16px;
+}
+
+.info-content ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 16px;
+}
+.info-content ul li {
+    padding: 8px 0 8px 24px;
+    position: relative;
+    color: var(--text2);
+    font-size: 0.95rem;
+}
+.info-content ul li::before {
+    content: '→';
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+}
+
+.info-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+.info-badge.research {
+    background: rgba(59,130,246,0.15);
+    color: var(--accent2);
+}
+.info-badge.festival {
+    background: rgba(245,158,11,0.15);
+    color: var(--warning);
+}
+
+.info-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.info-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+}
+.info-card h3 {
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+.info-card p {
+    font-size: 0.85rem;
+    color: var(--text2);
+    line-height: 1.6;
+}
+
+.info-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text2);
+    margin-bottom: 24px;
+    transition: all 0.2s;
+}
+.info-back:hover {
+    background: var(--panel2);
+    color: var(--text);
+}
+
+@media (max-width: 900px) {
+    .info-layout { grid-template-columns: 1fr; }
+    .info-sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 20px;
+    }
+    .info-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    .info-nav a { padding: 8px 10px; font-size: 0.8rem; }
+    .info-content { padding: 24px 20px; }
+}

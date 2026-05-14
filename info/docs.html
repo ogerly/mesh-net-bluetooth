@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentation</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/info.css">
+</head>
+<body>
+    <div class="info-layout">
+        <aside class="info-sidebar">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                MeshNet Connect
+            </div>
+            <nav class="info-nav">
+                <a href="about.html">Über das Projekt</a>
+                <a href="how-it-works.html">Wie es funktioniert</a>
+                <a href="bluetooth-mesh.html">Bluetooth Mesh erklärt</a>
+                <a href="news.html">Neuigkeiten</a>
+                <a href="docs.html" class="active">Dokumentation</a>
+                <a href="workshop.html">Workshop / Festival</a>
+                <a href="faq.html">FAQ</a>
+            </nav>
+        </aside>
+        <main class="info-content">
+            <a href="../index.html" class="info-back">← Zurück zur App</a>
+            <span class="info-badge research">Forschungsprojekt</span>
+            <h1>Dokumentation</h1>
+            
+            <h2>File Structure</h2>
+            <pre style="background:var(--panel);padding:20px;border-radius:12px;border:1px solid var(--border);font-size:0.85rem;color:var(--text2);margin:16px 0;overflow-x:auto;">
+meshnet/
+├── index.html              ← Startseite mit Mesh-Canvas
+├── info/
+│   ├── about.html          ← Über das Projekt
+│   ├── how-it-works.html   ← Funktionsweise
+│   ├── bluetooth-mesh.html ← Bluetooth Mesh erklärt
+│   ├── news.html           ← Neuigkeiten
+│   ├── docs.html           ← Dokumentation
+│   └── workshop.html       ← Workshop / Festival
+├── css/
+│   ├── main.css            ← Shared styles
+│   ├── mesh.css            ← Canvas/UI styles
+│   └── info.css            ← Info-page styles
+├── js/
+│   ├── meshnet.js          ← Core mesh logic
+│   ├── canvas.js           ← Canvas rendering
+│   ├── bluetooth.js        ← Web Bluetooth API
+│   ├── routing.js          ← Managed flooding
+│   └── ui.js               ← UI helpers
+└── assets/
+    └── images/
+</pre>
+            
+            <h2>Code Guide</h2>
+            <ul>
+                <li><strong>meshnet.js</strong> — Node class, state management, initNetwork, addRandomNode, BFS hops</li>
+                <li><strong>canvas.js</strong> — Canvas resize, draw(), loop(), packet animation, node rendering</li>
+                <li><strong>bluetooth.js</strong> — scanBluetooth(), checkBluetooth(), Web Bluetooth API</li>
+                <li><strong>routing.js</strong> — sendMessage(), floodMessage(), continueFloodFrom(), receiveMessage()</li>
+                <li><strong>ui.js</strong> — addMessageToUI(), updateUI(), toast(), escapeHtml()</li>
+            </ul>
+            
+            <div class="info-divider"></div>
+            
+            <h2>Mesh Protocol</h2>
+            <ul>
+                <li>Node ID: 4-byte hex (0xXXXX)</li>
+                <li>Message TTL: 7 hops</li>
+                <li>Range: 180px canvas (~10m real)</li>
+                <li>Routing: Managed Flooding</li>
+                <li>Relay: only relay nodes forward</li>
+                <li>Loop prevention: route tracking</li>
+            </ul>
+            
+            <div class="info-divider"></div>
+            
+            <h2>Browser Support</h2>
+            <ul>
+                <li>Chrome Android: ✅ Full Web Bluetooth</li>
+                <li>Chrome Desktop: ✅ Full Web Bluetooth</li>
+                <li>Edge Windows: ✅ Full Web Bluetooth</li>
+                <li>Safari iOS: ❌ Simulation only</li>
+                <li>Firefox: ❌ Simulation only</li>
+                <li>Samsung Internet: ✅ Partial (Chromium)</li>
+            </ul>
+        </main>
+    </div>
+</body>
+</html>

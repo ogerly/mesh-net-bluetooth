@@ -1,0 +1,14 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#0a0e17" rx="80"/>
+  <circle cx="256" cy="256" r="60" fill="#00d4aa" stroke="#00d4aa" stroke-width="2"/>
+  <circle cx="256" cy="256" r="18" fill="#fff"/>
+  <line x1="256" y1="80" x2="256" y2="196" stroke="#00d4aa" stroke-width="8"/>
+  <line x1="256" y1="316" x2="256" y2="432" stroke="#00d4aa" stroke-width="8"/>
+  <line x1="80" y1="256" x2="196" y2="256" stroke="#00d4aa" stroke-width="8"/>
+  <line x1="316" y1="256" x2="432" y2="256" stroke="#00d4aa" stroke-width="8"/>
+  <line x1="132" y1="132" x2="206" y2="206" stroke="#00d4aa" stroke-width="8"/>
+  <line x1="306" y1="306" x2="380" y2="380" stroke="#00d4aa" stroke-width="8"/>
+  <line x1="132" y1="380" x2="206" y2="306" stroke="#00d4aa" stroke-width="8"/>
+  <line x1="306" y1="206" x2="380" y2="132" stroke="#00d4aa" stroke-width="8"/>
+</svg>
