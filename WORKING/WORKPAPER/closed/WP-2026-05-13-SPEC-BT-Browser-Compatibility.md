@@ -75,14 +75,9 @@ function initBluetooth() {
 ## Open Questions
 
 1. Samsung Internet BT support reliability?
-2. Brauchen wir einen "Bluetooth Checker" auf der Startseite?
-3. Wie viele Dongles für Desktop-Workshop?
-4. iOS-Fallback: QR-Code Sharing oder nur simulation?
-5. Should we add a "device info" section on info pages?
+2. Wie viele Dongles für Desktop-Workshop?
+3. iOS-Fallback: QR-Code Sharing oder nur simulation?
 
-## Next Steps
+## Status: ✅ COMPLETED
 
-1. Bluetooth detection code implement
-2. Simulation fallback polish
-3. Dongle inventory for festival
-4. Device compatibility info for info pages
+Implementation: `bluetooth.js` — checkBluetooth(), scanBluetooth(), detection + simulation fallback. Info page content in `info/bluetooth-mesh.html` and `info/faq.html`.

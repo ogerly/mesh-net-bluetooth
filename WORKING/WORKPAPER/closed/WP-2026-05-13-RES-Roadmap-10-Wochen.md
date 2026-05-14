@@ -9,26 +9,35 @@
 **Foundation**
 - [x] Workspace bootstrap (AAMS)
 - [x] Initial project scan
-- [ ] BRAIN file: project idea dokumentieren
-- [ ] Whitepaper: mesh architecture
-- [ ] File structure finalisieren
-- [ ] JS modularization planen
+- [x] BRAIN file: project idea dokumentieren
+- [x] Whitepaper: mesh architecture (WH-001)
+- [x] File structure finalisieren
+- [x] JS modularization planen + gebaut
 
 ### Week 2 (2026-05-20 to 2026-05-26)
 **Frontend Core**
-- [ ] `index.html` — Startseite mit Mesh-Canvas
-- [ ] `css/main.css` — Shared styles
-- [ ] `js/meshnet.js` — Core logic extrahiert
-- [ ] `js/canvas.js` — Canvas rendering
-- [ ] Bluetooth detection + simulation fallback
+- [x] `index.html` — Startseite mit Mesh-Canvas
+- [x] `css/main.css` — Shared styles
+- [x] `css/mesh.css` — Canvas/UI styles
+- [x] `css/info.css` — Info-page styles
+- [x] `js/meshnet.js` — Core logic extrahiert
+- [x] `js/canvas.js` — Canvas rendering
+- [x] `js/bluetooth.js` — Web Bluetooth API
+- [x] `js/routing.js` — Managed flooding
+- [x] `js/ui.js` — UI helpers
+- [x] Bluetooth detection + simulation fallback
 
 ### Week 3 (2026-05-27 to 2026-06-02)
 **Info Pages**
-- [ ] `info/about.html` — Über das Projekt
-- [ ] `info/how-it-works.html` — Funktionsweise
-- [ ] `info/bluetooth-mesh.html` — Bluetooth Mesh erklärt
-- [ ] Navigation zwischen pages
-- [ ] Responsive design
+- [x] `info/about.html` — Über das Projekt
+- [x] `info/how-it-works.html` — Funktionsweise
+- [x] `info/bluetooth-mesh.html` — Bluetooth Mesh erklärt
+- [x] `info/news.html` — Neuigkeiten
+- [x] `info/docs.html` — Dokumentation
+- [x] `info/workshop.html` — Workshop / Festival
+- [x] `info/faq.html` — FAQ
+- [x] Navigation zwischen pages (sidebar)
+- [x] Responsive design
 
 ### Week 4 (2026-06-03 to 2026-06-09)
 **Bluetooth Integration**
@@ -151,8 +160,16 @@
 
 ## Next Steps
 
-1. BRAIN file dokumentieren
-2. Whitepaper: mesh architecture
-3. Week 1 tasks starten
-4. Hardware (Dongles) bestellen
-5. Festival dates confirmieren
+1. BRAIN file dokumentieren ✅
+2. Whitepaper: mesh architecture ✅
+3. Week 1 tasks starten ✅
+4. Week 2: Frontend core built ✅
+5. Week 3: Info pages built ✅
+6. Week 5: Message types, TTL, node naming ✅
+7. Week 7: PWA/Offline ✅
+8. UI polish ✅
+9. Hardware (Dongles) bestellen
+10. Festival dates confirmieren
+11. Cross-browser testing
+12. Node registration system
+13. Education materials (handout, walkthrough)

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluetooth Mesh erklärt</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/info.css">
+</head>
+<body>
+    <div class="info-layout">
+        <aside class="info-sidebar">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                MeshNet Connect
+            </div>
+            <nav class="info-nav">
+                <a href="about.html">Über das Projekt</a>
+                <a href="how-it-works.html">Wie es funktioniert</a>
+                <a href="bluetooth-mesh.html" class="active">Bluetooth Mesh erklärt</a>
+                <a href="news.html">Neuigkeiten</a>
+                <a href="docs.html">Dokumentation</a>
+                <a href="workshop.html">Workshop / Festival</a>
+                <a href="faq.html">FAQ</a>
+            </nav>
+        </aside>
+        <main class="info-content">
+            <a href="../index.html" class="info-back">← Zurück zur App</a>
+            <span class="info-badge research">Forschungsprojekt</span>
+            <h1>Bluetooth Mesh erklärt</h1>
+            <p>Bluetooth Mesh ermöglicht vernetzte Kommunikation zwischen vielen Bluetooth-Geräten — ohne Server.</p>
+            
+            <h2>Bluetooth Classic vs BLE Mesh</h2>
+            <p>MeshNet nutzt <strong>BLE (Bluetooth Low Energy) Mesh</strong> — nicht Classic Bluetooth:</p>
+            <ul>
+                <li>BLE = niedrigere Energie, mehr Geräte, mesh-fähig</li>
+                <li>Classic = point-to-point (1:1 Verbindung)</li>
+                <li>BLE Mesh = many-to-many (viele:viele)</li>
+            </ul>
+            
+            <h2>Web Bluetooth API</h2>
+            <p>Die Web Bluetooth API erlaubt Browser-Access zu BLE-Geräten:</p>
+            <ul>
+                <li><code>navigator.bluetooth.requestDevice()</code> — Geräte scannen</li>
+                <li>Chrome/Edge: native Support (Android + Desktop)</li>
+                <li>Safari/Firefox: kein Support</li>
+                <li>Festival: Android ~70%, iOS ~25%, Desktop ~5%</li>
+            </ul>
+            
+            <div class="info-divider"></div>
+            
+            <h2>Mesh Topologie</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Star Topologie</h3>
+                    <p>Alle verbinden mit einem Hub. Hub fällt aus = Netzwerk fällt aus.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Mesh Topologie</h3>
+                    <p>Alle verbinden mit Nachbarn. Node fällt aus = Netzwerk reroutet.</p>
+                </div>
+            </div>
+            
+            <h2>Managed Flooding</h2>
+            <p>Das Routing-Verfahren in MeshNet:</p>
+            <ul>
+                <li>Nachricht wird an alle Nachbarn gesendet</li>
+                <li>Relay Nodes forwarding weiter</li>
+                <li>TTL (Time To Live) begrenzt die Reichweite</li>
+                <li>Route tracking prevents loops</li>
+            </ul>
+            
+            <h2>Reichweite</h2>
+            <p>Bluetooth Reichweite ~10m. Multi-hop erweitert das Netzwerk:</p>
+            <ul>
+                <li>1 Hop = direkte Verbindung (~10m)</li>
+                <li>7 Hops = ~70m in linearer Anordnung</li>
+                <li>Mesh-Topologie = viel mehr coverage</li>
+                <li>Festival-Gelände: 10-30 Nodes möglich</li>
+            </ul>
+        </main>
+    </div>
+</body>
+</html>

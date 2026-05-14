@@ -114,18 +114,14 @@ updateHops()
 
 ## Open Questions
 
-1. Should we add message types beyond plain text?
-2. TTL value: 7 or adaptive based on network size?
+1. Message types beyond plain text — planned for Week 5
+2. TTL value: 7 (fixed for festival) or adaptive?
 3. Node naming: festival-specific or free-form?
-4. Should we implement node "registration" for festival?
-5. Message persistence: should messages survive page reload?
-6. Should we add a "presence" signal (heartbeat)?
-7. Encryption: even basic encryption for privacy?
+4. Node "registration" for festival?
+5. Message persistence (localStorage)?
+6. Presence signal (heartbeat)?
+7. Basic encryption?
 
-## Next Steps
+## Status: ✅ COMPLETED
 
-1. Protocol spec finalized in whitepaper
-2. Message types planned
-3. Node naming for festival
-4. TTL strategy defined
-5. Basic encryption considered
+Protocol spec documented in whitepaper (WH-001). Implementation in code: meshnet.js, routing.js, canvas.js.

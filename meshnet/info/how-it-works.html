@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wie MeshNet funktioniert</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/info.css">
+</head>
+<body>
+    <div class="info-layout">
+        <aside class="info-sidebar">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                MeshNet Connect
+            </div>
+            <nav class="info-nav">
+                <a href="about.html">Über das Projekt</a>
+                <a href="how-it-works.html" class="active">Wie es funktioniert</a>
+                <a href="bluetooth-mesh.html">Bluetooth Mesh erklärt</a>
+                <a href="news.html">Neuigkeiten</a>
+                <a href="docs.html">Dokumentation</a>
+                <a href="workshop.html">Workshop / Festival</a>
+                <a href="faq.html">FAQ</a>
+            </nav>
+        </aside>
+        <main class="info-content">
+            <a href="../index.html" class="info-back">← Zurück zur App</a>
+            <span class="info-badge research">Forschungsprojekt</span>
+            <h1>Wie MeshNet funktioniert</h1>
+            <p>Die Canvas-Visualisierung auf der Startseite zeigt das unsichtbare Bluetooth-Netzwerk in Echtzeit.</p>
+            
+            <h2>Nodes</h2>
+            <p>Jedes Gerät mit MeshNet ist ein Node. Nodes sind entweder Relay oder Leaf:</p>
+            <ul>
+                <li><strong>Relay Nodes</strong> (grün) — forwarding messages, größere Darstellung</li>
+                <li><strong>Leaf Nodes</strong> (blau) — receive/send only, kleinere Darstellung</li>
+                <li><strong>Dieses Gerät</strong> (grün mit glow) — immer Relay, dein Node</li>
+            </ul>
+            
+            <h2>Verbindungen</h2>
+            <p>Linien zwischen Nodes zeigen Bluetooth-Reichweite (~10m). Nodes innerhalb der Reichweite können direkt kommunizieren.</p>
+            
+            <h2>Message Routing — Managed Flooding</h2>
+            <p>Wenn du eine Nachricht sendest:</p>
+            <ul>
+                <li>Yellow packets zeigen die Route durch das Netzwerk</li>
+                <li>Relay Nodes forwarding die Nachricht (TTL-basiert)</li>
+                <li>Max 7 Hops — Nachrichten sterben nach 7 Relay-Schritten</li>
+                <li>BFS berechnet die Hop-Distanz von deinem Node zu allen anderen</li>
+            </ul>
+            
+            <div class="info-divider"></div>
+            
+            <h2>Simulation vs Bluetooth</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Simulation</h3>
+                    <p>Simulated Nodes bewegen sich auf der Canvas. Messages werden geroutet. Funktioniert auf allen Geräten.</p>
+                </div>
+                <div class="info-card">
+                    <h3>Bluetooth</h3>
+                    <p>Reale Nodes via Web Bluetooth API. Android Chrome/Edge. Echte Mesh-Kommunikation.</p>
+                </div>
+            </div>
+            
+            <h2>Self-Healing</h2>
+            <p>Wenn Nodes offline gehen, reroutet das Netzwerk automatisch. BFS berechnet neue Hops. Das Netzwerk heilt sich selbst.</p>
+        </main>
+    </div>
+</body>
+</html>

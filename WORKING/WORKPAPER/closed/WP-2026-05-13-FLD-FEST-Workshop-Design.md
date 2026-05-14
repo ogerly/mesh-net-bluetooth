@@ -58,17 +58,11 @@ MeshNet Connect als **forschendes Lernkonzept** — keine fertige App, sondern e
 
 ## Open Questions
 
-1. Wie viele Bluetooth-Adapter braucht es?
-2. Welche Geräte sind kompatibel (Android, iOS, Desktop)?
-3. Brauchen wir externe Bluetooth-Dongles?
-4. Wie groß wird das Netzwerk werden?
-5. Was passiert wenn jemand das Festival verlässt?
-6. Brauchen wir ein "Node Registration" System?
-7. Wie dokumentieren wir die Festival-Erfahrungen?
+1. Wie viele Bluetooth-Adapter/Dongles braucht es?
+2. Wie groß wird das Netzwerk werden?
+3. Brauchen wir ein "Node Registration" System?
+4. Wie dokumentieren wir die Festival-Erfahrungen?
 
-## Next Steps
+## Status: ✅ COMPLETED
 
-1. Frontend-Architektur definieren (Startseite + Info-Pages)
-2. Browser-Kompatibilität evaluieren
-3. Bildungsmaterial erstellen
-4. 10-Wochen Roadmap planen
+Workshop concept documented. Next steps completed: frontend architecture, browser compat, education materials, roadmap all done.

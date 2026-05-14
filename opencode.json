@@ -19,6 +19,25 @@
           "name": "Qwen3.6 35B"
         }
       }
+    },
+    "mantis-proxy": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "MANTIS Ollama Cloud Proxy",
+      "options": {
+        "baseURL": "http://127.0.0.1:9876/v1/",
+        "apiKey": ""
+      },
+      "models": {
+        "gpt-oss:120b-cloud": {
+          "name": "GPT-OSS 120B (cloud)"
+        },
+        "nemotron-3-super:cloud": {
+          "name": "Nemotron 3 Super (cloud)"
+        },
+        "minimax-m2.5:cloud": {
+          "name": "MiniMax M2.5 (cloud)"
+        }
+      }
     }
   }
 }

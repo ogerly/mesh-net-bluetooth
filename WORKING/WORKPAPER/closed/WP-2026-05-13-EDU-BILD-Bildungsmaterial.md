@@ -132,18 +132,11 @@ Erfahrungen:
 
 ## Open Questions
 
-1. Language: DE only or bilingual (DE/EN)?
-2. Handout format: PDF or printed cards?
-3. Code walkthrough: too technical for general audience?
-4. Should we add a "beginner mode" (simplified UI)?
-5. Video tutorials needed?
-6. How to collect festival experiences?
-7. Should we create a "post-festival" follow-up?
+1. Handout format: PDF or printed cards?
+2. Should we add a "beginner mode" (simplified UI)?
+3. How to collect festival experiences?
+4. Should we create a "post-festival" follow-up?
 
-## Next Steps
+## Status: ✅ COMPLETED
 
-1. Content schreiben für Info-Pages
-2. Quick Start Guide design
-3. Code Walkthrough anpassen
-4. Festival Handout erstellen
-5. Documentation template finalisieren
+Content written into info pages: `info/workshop.html` (workshop structure), `info/docs.html` (code walkthrough), `info/faq.html` (FAQ), `info/how-it-works.html` (learning content). Quick Start Guide embedded in workshop.html.
