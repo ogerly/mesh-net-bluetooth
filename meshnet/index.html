@@ -137,6 +137,45 @@
                 .then(() => {})
                 .catch(() => {});
         }
+
+        // PWA installation prompt handling
+        let deferredPrompt;
+        const installButton = document.createElement('button');
+        installButton.textContent = 'Installieren';
+        installButton.className = 'btn btn-primary';
+        installButton.style.position = 'fixed';
+        installButton.style.bottom = '20px';
+        installButton.style.left = '20px';
+        installButton.style.zIndex = '1000';
+        installButton.style.display = 'none';
+        installButton.addEventListener('click', async () => {
+            installButton.style.display = 'none';
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    toast('App erfolgreich installiert', 'success');
+                }
+                deferredPrompt = null;
+            }
+        });
+        document.body.appendChild(installButton);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI to show the install button
+            installButton.style.display = 'block';
+            toast('App kann installiert werden — klicke auf den Installieren-Button', 'info');
+        });
+
+        window.addEventListener('appinstalled', (e) => {
+            toast('App wurde installiert', 'success');
+            deferredPrompt = null;
+            installButton.style.display = 'none';
+        });
     </script>
 </body>
 </html>

@@ -79,4 +79,9 @@ Created meshnet/offline.html with:
 4. Do we want to add a custom install button UI, or rely on browser prompts? (Optional enhancement)
 
 ## Status
-🟢 NEAR COMPLETION - Core PWA native app capabilities implemented, testing and documentation remaining.
+🟢 COMPLETED - Core PWA native app capabilities implemented, including:
+- Manifest with orientation preference
+- iOS specific meta tags and apple-touch-icon links (using SVG)
+- Offline page creation and service worker handling
+- Installation prompt handling with custom button
+Remaining: Testing on devices and updating documentation with results.

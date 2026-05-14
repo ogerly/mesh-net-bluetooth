@@ -52,6 +52,10 @@ This project implements a Bluetooth Mesh network simulation that runs entirely i
 
 ## Getting Started
 
+### Live Demo
+
+The application is live at: **https://ogerly.github.io/mesh-net-bluetooth/**
+
 ### Local Development
 
 1. Clone the repository
@@ -76,19 +80,21 @@ This project implements a Bluetooth Mesh network simulation that runs entirely i
 
 ### GitHub Pages
 
-The application is configured for deployment via GitHub Pages from the `/meshnet` directory:
+The application is deployed via GitHub Pages from the `gh-pages` branch, which contains the contents of the `/meshnet` directory:
 
-1. Push to GitHub
-2. Enable GitHub Pages in repository settings
-3. Set source to `main` branch, `/meshnet` folder
-4. Access at `https://[username].github.io/[repository]/meshnet/`
+1. The site is automatically built and deployed from the `gh-pages` branch
+2. Access the live site at: `https://ogerly.github.io/mesh-net-bluetooth/`
+3. To update the site, push changes to the `main` branch and run `git subtree push --prefix meshnet origin gh-pages` (or use GitHub Actions for automation)
 
 ### PWA Features
 
-- Installable via browser "Add to Home Screen"
-- Offline caching of core assets
+- Installable via browser "Add to Home Screen" or custom install button
+- Offline caching of core assets with fallback offline page
 - Background sync (where supported)
 - Responsive design for mobile and desktop
+- iOS-optimized with proper status bar styling
+- Orientation locked to portrait for better mobile experience
+- Install prompts with deferred timing for better user experience
 
 ## Browser Support
 
