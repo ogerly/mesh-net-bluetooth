@@ -35,17 +35,37 @@ function addMessageToUI(msg, own) {
 function updateUI() {
     const list = document.getElementById('nodeList');
     list.innerHTML = '';
-    state.nodes.forEach(node => {
+    
+    // Sort nodes: connected first, then by proximity (hops), then by name
+    const sortedNodes = [...state.nodes].sort((a, b) => {
+        // My node always first
+        if (a.isMe) return -1;
+        if (b.isMe) return 1;
+        // Connected nodes before disconnected
+        if (a.connected !== b.connected) return b.connected - a.connected;
+        // Then by hop distance (lower is better)
+        if (a.hops !== b.hops) return a.hops - b.hops;
+        // Finally alphabetically by name
+        return a.name.localeCompare(b.name);
+    });
+    
+    sortedNodes.forEach(node => {
         const el = document.createElement('div');
-        el.className = `node-item ${node.isMe ? 'active' : ''} ${!node.online ? 'offline' : ''}`;
-        const signal = Math.max(0, Math.min(4, Math.floor((node.rssi + 90) / 10)));
+        el.className = `node-item ${node.isMe ? 'active' : ''} ${!node.online ? 'offline' : ''} ${node.connected ? 'connected' : ''}`;
+        
+        // Get signal strength (0-4 bars)
+        const signal = node.rssi ? Math.max(0, Math.min(4, Math.floor((node.rssi + 90) / 10))) : 0;
+        
+        // Connection status indicator
+        const connectionStatus = node.connected ? '🟢' : (node.online ? '🟡' : '⚪');
+        
         el.innerHTML = `
             <div class="node-header">
-                <span class="node-name">${escapeHtml(node.name)}</span>
+                <span class="node-name">${connectionStatus} ${escapeHtml(node.name)}</span>
                 <span class="node-badge ${node.isRelay ? 'badge-relay' : 'badge-leaf'}">${node.isRelay ? 'Relay' : 'Leaf'}</span>
             </div>
             <div class="node-meta">
-                <span style="font-family:monospace">${node.id}</span>
+                <span style="font-family:monospace;font-size:0.7rem;color:var(--text2)">${node.id.slice(0,8)}...</span>
                 <span class="node-signal">
                     ${[1,2,3,4].map(i => `<div class="signal-bar ${i<=signal?'on':''}" style="height:${4+i*3}px"></div>`).join('')}
                 </span>
@@ -58,7 +78,9 @@ function updateUI() {
 
     const relays = state.nodes.filter(n => n.isRelay && n.online).length;
     const maxHops = state.nodes.reduce((m, n) => Math.max(m, n.hops === Infinity ? 0 : n.hops), 0);
-    document.getElementById('statNodes').textContent = state.nodes.length;
+    const connectedCount = state.nodes.filter(n => n.connected).length;
+    
+    document.getElementById('statNodes').textContent = connectedCount + '/' + state.nodes.length;
     document.getElementById('statHops').textContent = maxHops;
     document.getElementById('statMsgs').textContent = state.messages.length;
     document.getElementById('statRelays').textContent = relays;
