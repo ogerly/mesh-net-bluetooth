@@ -134,6 +134,14 @@ Additional work completed:
 - Added stale device cleanup (30-second timeout)
 - Prepared for festival stress testing with QR pairing and service filtering
 
+## Latest Implementation (2026-05-14)
+✅ Added service UUID filtering for reliable data transfer
+✅ Added GATT connection attempt to get proper device names  
+✅ Added visual connection status indicators (🟢 connected, 🟡 online, ⚪ offline)
+✅ Added device sorting: connected first, then by hops, then by name
+✅ Added real-time connection status display in node list (shows "X/Y" connected)
+✅ Added error handling improvements for pairing success but no data flow
+
 ## Updated Next Steps
 1. [ ] REFACTOR-001: Replace `prompt()` calls with custom modal for better UX
 2. [ ] REFACTOR-002: Implement proper cache versioning in service worker

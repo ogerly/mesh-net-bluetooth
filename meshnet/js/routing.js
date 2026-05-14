@@ -22,7 +22,16 @@ function sendMessage(type) {
 
     state.messages.push(msg);
     addMessageToUI(msg, true);
-    floodMessage(msg, state.myId);
+    
+    // Use transport bridge to send - tries real BT, falls back to simulation
+    const transport = window.transportBridge ? window.transportBridge.getTransport() : null;
+    if (transport && transport.send) {
+        transport.send(text);
+    } else {
+        // Fallback to original flood message for demo
+        floodMessage(msg, state.myId);
+    }
+    
     updateUI();
 }
 
