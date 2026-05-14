@@ -4,6 +4,7 @@
     "description": "Dezentrales Bluetooth Mesh Netzwerk als Forschungsprojekt",
     "start_url": "./index.html",
     "display": "standalone",
+    "orientation": "portrait-primary",
     "background_color": "#0a0e17",
     "theme_color": "#00d4aa",
     "version": "1.0.0",

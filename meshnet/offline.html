@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeshNet Connect — Offline</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mesh.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00d4aa">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                MeshNet Connect
+            </div>
+            <div class="status-bar">
+                <span id="netStatus">Offline</span>
+                <div class="status-dot" id="statusDot"></div>
+            </div>
+        </header>
+
+        <main class="main-area" style="display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+            <div>
+                <h1>Du bist offline</h1>
+                <p>Einige Funktionen könnten nicht verfügbar sein, da du keine Internetverbindung hast.</p>
+                <p>Die zwischengespeicherten Inhalte stehen dir weiterhin zur Verfügung.</p>
+                <button class="btn btn-primary" onclick="window.location.reload();">
+                    Erneut versuchen
+                </button>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
