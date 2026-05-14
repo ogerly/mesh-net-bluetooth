@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeshNet Connect — Dezentrales Bluetooth Mesh</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mesh.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#00d4aa">
+    <link rel="icon" type="image/svg+xml" href="assets/icons/meshnet-192.svg">
+</head>
+<body>
+    <div class="app">
+        <header class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                MeshNet Connect
+            </div>
+            <div class="status-bar">
+                <span id="netStatus">Simulation</span>
+                <div class="status-dot" id="statusDot"></div>
+                <span id="nodeCount">0 Nodes</span>
+                <span id="myId" style="font-family:monospace;color:var(--accent)">—</span>
+                <a href="info/workshop.html" style="color:var(--text2);font-size:0.8rem">Workshop →</a>
+            </div>
+        </header>
+
+        <aside class="left-panel">
+            <div class="panel-title">Netzwerk-Kontrolle</div>
+            <div class="controls">
+                <button class="btn btn-primary" id="btnScan" onclick="scanBluetooth()">
+                    🔵 Bluetooth Scan
+                </button>
+                <button class="btn btn-secondary" id="btnSim" onclick="toggleSimulation()">
+                    ▶️ Simulation Starten
+                </button>
+                <button class="btn btn-secondary" onclick="addRandomNode()">
+                    ➕ Node Hinzufügen
+                </button>
+                <button class="btn btn-secondary" onclick="setNodeName()">
+                    ✏️ Name Setzen
+                </button>
+                <button class="btn btn-secondary" onclick="clearNetwork()">
+                    🗑️ Netzwerk Leeren
+                </button>
+            </div>
+            <div class="panel-title">Aktive Nodes</div>
+            <div class="node-list" id="nodeList"></div>
+        </aside>
+
+        <main class="main-area">
+            <canvas id="meshCanvas"></canvas>
+            <div class="overlay">
+                <div class="overlay-row">
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statNodes">0</div>
+                        <div class="overlay-label">Nodes</div>
+                    </div>
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statHops">0</div>
+                        <div class="overlay-label">Max Hops</div>
+                    </div>
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statMsgs">0</div>
+                        <div class="overlay-label">Messages</div>
+                    </div>
+                    <div class="overlay-stat">
+                        <div class="overlay-num" id="statRelays">0</div>
+                        <div class="overlay-label">Relays</div>
+                    </div>
+                </div>
+            </div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div> Relay Node</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div> Leaf Node</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div> This Device</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--text2)"></div> Offline</div>
+                <div class="legend-item" style="margin-top:8px;font-size:0.65rem;color:var(--accent2)">🔬 Forschungsprojekt</div>
+            </div>
+        </main>
+
+        <aside class="right-panel">
+            <div class="panel-title">Mesh Messenger</div>
+            <div class="chat-area">
+                <div class="messages" id="messages"></div>
+                <div class="msg-input-area">
+                    <input type="text" class="msg-input" id="msgInput" placeholder="Nachricht senden..." maxlength="200">
+                    <button class="btn btn-primary" onclick="sendMessage()">➤</button>
+                </div>
+                <div class="controls" style="padding:8px 16px;border-top:1px solid var(--border)">
+                    <button class="btn btn-secondary" style="font-size:0.75rem;padding:6px 10px" onclick="sendPresence()">
+                        📍 Presence
+                    </button>
+                    <button class="btn btn-secondary" style="font-size:0.75rem;padding:6px 10px" onclick="sendFind()">
+                        🔍 Find
+                    </button>
+                    <button class="btn btn-secondary" style="font-size:0.75rem;padding:6px 10px" onclick="sendWorkshopAnnouncement()">
+                        📢 WKS
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="toast-container" id="toasts"></div>
+
+    <script src="js/meshnet.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/bluetooth.js"></script>
+    <script src="js/routing.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/qrcode.min.js"></script>
+    <script>
+        // Init
+        setTimeout(() => {
+            resize();
+            checkBluetooth();
+            initNetwork();
+            initBluetoothStatus(); // Initialize Bluetooth status indicators
+            toast('MeshNet bereit — dezentrales Bluetooth Mesh als Forschungsprojekt', 'info');
+        }, 100);
+
+        // PWA registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => {})
+                .catch(() => {});
+        }
+    </script>
+</body>
+</html>
