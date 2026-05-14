@@ -2,7 +2,7 @@
 
 async function scanBluetooth() {
     if (!navigator.bluetooth) {
-        toast('Bluetooth nicht verfügbar — Simulation aktiv', 'error');
+        toast('Bluetooth nicht verfügbar', 'error');
         state.bluetoothAvailable = false;
         state.networkMode = 'simulation';
         document.getElementById('netStatus').textContent = 'Simulation';
@@ -23,12 +23,30 @@ async function scanBluetooth() {
             acceptAllDevices: true,
             optionalServices: ['generic_access', 'battery_service']
         });
-        state.bluetoothDevice = device;
-        toast(`Verbunden: ${device.name || 'Unbekannt'}`, 'success');
 
-        const node = new Node(W/2 + (Math.random()-0.5)*200, H/2 + (Math.random()-0.5)*200, device.name || 'BT-Device', true);
-        node.online = true;
-        state.nodes.push(node);
+        // Check if we've seen this device before (by ID)
+        if (state.knownDevices.has(device.id)) {
+            // Update existing device info
+            const existingNode = state.knownDevices.get(device.id);
+            existingNode.name = device.name || 'BT-Device';
+            // Update the actual node in state.nodes if it exists
+            const nodeInState = state.nodes.find(n => n.id === device.id);
+            if (nodeInState) {
+                nodeInState.name = device.name || 'BT-Device';
+            }
+            toast(`Bereits bekannt: ${device.name || 'Unbekannt'}`, 'info');
+        } else {
+            // New device
+            state.knownDevices.set(device.id, { name: device.name || 'BT-Device', device });
+            
+            // Add as new node
+            const node = new Node(W/2 + (Math.random()-0.5)*200, H/2 + (Math.random()-0.5)*200, device.name || 'BT-Device', true);
+            node.id = device.id; // Use the Bluetooth device ID as the node ID
+            node.online = true;
+            state.nodes.push(node);
+            toast(`Neues Gerät: ${device.name || 'Unbekannt'}`, 'success');
+        }
+
         updateHops();
         updateUI();
         draw();
@@ -45,6 +63,55 @@ async function scanBluetooth() {
             updateBluetoothStatus(false);
         } else {
             toast('Bluetooth Scan abgebrochen: ' + e.message, 'warn');
+        }
+    }
+}
+
+// Function to periodically update the list of known devices and remove stale ones
+function updateKnownDevices() {
+    const now = Date.now();
+    const STALE_TIME = 30000; // 30 seconds
+    
+    for (const [deviceId, deviceInfo] of state.knownDevices.entries()) {
+        // We don't have a timestamp in deviceInfo, so we'll need to add it
+        // For now, we'll just keep all devices we've ever seen
+        // In a more advanced version, we'd track lastSeen and remove old ones
+    }
+}
+
+// Initialize Bluetooth status on load
+function initBluetoothStatus() {
+    if (!navigator.bluetooth) {
+        toast('Web Bluetooth API nicht verfügbar', 'info');
+        updateBluetoothStatus(false);
+    } else {
+        updateBluetoothStatus(true);
+        // Optional: Add periodic checking
+        setInterval(() => {
+            // Re-check status periodically (optional enhancement)
+            updateKnownDevices();
+        }, 5000);
+    }
+}
+
+// Update known devices and remove stale ones
+function updateKnownDevices() {
+    const now = Date.now();
+    const STALE_TIME = 30000; // 30 seconds
+    
+    for (const [deviceId, deviceInfo] of state.knownDevices.entries()) {
+        if (now - deviceInfo.lastSeen > STALE_TIME) {
+            // Remove stale device
+            state.knownDevices.delete(deviceId);
+            // Also remove from nodes array if present
+            const nodeIndex = state.nodes.findIndex(node => node.id === deviceId);
+            if (nodeIndex !== -1) {
+                state.nodes.splice(nodeIndex, 1);
+                toast(`Gerät ${deviceInfo.name} entfernt (timeout)`, 'info');
+                updateHops();
+                updateUI();
+                draw();
+            }
         }
     }
 }

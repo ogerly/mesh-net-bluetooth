@@ -149,48 +149,7 @@ function receiveMessage(msg) {
     toast(`Nachricht von ${msg.srcName} empfangen (${msg.hops} Hops)`, 'info');
 }
 
-// Simulate incoming messages
-setInterval(() => {
-    if (state.simulation && state.nodes.length > 1 && Math.random() < 0.15) {
-        const sender = state.nodes.find(n => !n.isMe && n.online);
-        if (sender) {
-            const texts = [
-                'Hallo vom Mesh! 📡',
-                'Offline-Modus aktiv.',
-                'Neuer Node bei 3 Hops.',
-                'Relay-Status: OK',
-                'Packet forwarded.',
-                'Mesh topology updated.'
-            ];
-            const msg = {
-                id: state.nextMsgId++,
-                src: sender.id,
-                srcName: sender.name,
-                text: texts[Math.floor(Math.random()*texts.length)],
-                ttl: 5,
-                hops: sender.hops,
-                route: [sender.id],
-                timestamp: Date.now(),
-                delivered: true,
-            };
-            receiveMessage(msg);
-        }
-    }
-}, 5000);
-
-// Random node failures / recoveries
-setInterval(() => {
-    if (state.simulation && state.nodes.length > 3) {
-        const victim = state.nodes[Math.floor(Math.random() * state.nodes.length)];
-        if (!victim.isMe) {
-            victim.online = !victim.online;
-            if (victim.online) {
-                toast(`${victim.name} ist wieder online`, 'success');
-            } else {
-                toast(`${victim.name} offline — Mesh rerouting...`, 'warn');
-            }
-            updateHops();
-            updateUI();
-        }
-    }
-}, 8000);
+/* 
+   Removed simulated incoming messages and node failure/recovery 
+   as part of transition to real-devices-only mode
+*/

@@ -11,9 +11,10 @@ const state = {
     bluetoothDevice: null,
     nextMsgId: 1,
     bluetoothAvailable: false,
-    networkMode: 'simulation',
+    networkMode: 'bluetooth',
     nodePrefix: '',
     msgType: 'chat',
+    knownDevices: new Map(), // Track known Bluetooth devices to prevent duplicates
 };
 
 // Load persisted node name
@@ -57,12 +58,11 @@ function setNodePrefix(prefix) {
     toast(`Prefix: ${prefix || 'Kein Prefix'}`, 'info');
 }
 
-function genFestivalName() {
-    const prefixes = ['CAMP','WKS','DEV','ART','GUEST',''];
-    const prefix = prefixes[Math.floor(Math.random()*prefixes.length)];
-    const names = ['Alpha','Bravo','Charlie','Delta','Echo','Foxtrot','Golf','Hotel'];
-    const name = names[Math.floor(Math.random()*names.length)] + '-' + Math.floor(Math.random()*99);
-    return prefix ? prefix + '-' + name : name;
+function genName() {
+    // This function is kept for potential future use but will not be called in normal operation
+    // We could remove it entirely, but keeping it avoids breaking other code that might reference it
+    const names = ['Alpha','Bravo','Charlie','Delta','Echo','Foxtrot','Golf','Hotel','India','Juliet','Kilo','Lima'];
+    return names[Math.floor(Math.random()*names.length)] + '-' + Math.floor(Math.random()*99);
 }
 
 function handleJoinURL(url) {
@@ -169,7 +169,7 @@ function initNetwork() {
     const me = new Node(W/2, H/2, state.myName, true, true);
     me.id = state.myId;
     state.nodes = [me];
-    for (let i = 0; i < 3; i++) addRandomNode();
+    // No longer adding random nodes - start with only the user's own node
     updateHops();
     updateUI();
     draw();
